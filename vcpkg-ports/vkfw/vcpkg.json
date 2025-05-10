@@ -1,0 +1,10 @@
+{
+  "name": "vkfw",
+  "version-string": "2132823",
+  "homepage": "https://github.com/Arialonomus/vkfw.git",
+  "dependencies": [
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    "glfw3"
+  ]
+}

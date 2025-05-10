@@ -1,0 +1,11 @@
+{
+  "name" : "vulkan-demo",
+  "version-string" : "0.1.0",
+  "builtin-baseline" : "6760f636e7bcd0dd034c5c0906f6174009465c29",
+  "dependencies" : [ {
+    "name" : "glm",
+    "version>=" : "1.0.1#3"
+  }, {
+    "name" : "vkfw"
+  } ]
+}
