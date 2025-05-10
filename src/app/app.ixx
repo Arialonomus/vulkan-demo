@@ -21,6 +21,7 @@ export namespace app {
         /* Data Members */
 
         vkfw::Window m_window;
+        vk::Instance m_vk_instance;
 
         /* Initialization Methods */
 
@@ -29,6 +30,15 @@ export namespace app {
          * @param window_size the 2D extent of the window, in pixels
          */
         void initWindow(const vk::Extent2D& window_size);
+
+        /**
+         * Creates a Vulkan instance with the required instance extensions
+         */
+        void initVulkan();
+
+        /* Execution Methods */
+
+        void mainLoop();
 
         /* Cleanup Methods */
 
