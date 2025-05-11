@@ -7,10 +7,10 @@ export module app;
 // import vkfw;
 import vulkan_hpp;
 
-export namespace app {
-    constexpr vk::Extent2D WINDOW_SIZE{ 1280, 720 };    // Constant for tutorial usage
+namespace app {
+    export constexpr vk::Extent2D WINDOW_SIZE{ 1280, 720 };    // Constant for tutorial usage
 
-    class App
+    export class App
     {
     public:
         /* Execution */
