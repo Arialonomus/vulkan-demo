@@ -4,10 +4,6 @@ module;
 
 module app;
 
-// External Dependencies
-// import vkfw;
-import vulkan_hpp;
-
 // Internal Dependencies
 import init;
 
@@ -27,9 +23,17 @@ namespace app {
 
     void App::initVulkan()
     {
+        // Instantiate the Vulkan instance
         m_vk_instance = init::createVulkanInstance();
+
+        // Initialize execution model
         m_surface = vkfw::createWindowSurface(m_vk_instance, m_window);
-        m_gpu = init::selectSuitableGPU(m_vk_instance, m_surface);
+
+        // Prepare the required device extension list
+        const std::vector<const char*> required_extensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+        // Create the logical device
+        m_gpu = init::selectSuitableGPU(m_vk_instance, required_extensions, m_surface);
     }
 
     void App::initWindow(const vk::Extent2D& window_size)

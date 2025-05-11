@@ -28,7 +28,9 @@ namespace app::init {
      * @return a newly instantiated GPU object corresponding to the best-suited Physical Device on the system
      */
     export [[nodiscard]] GPU
-    selectSuitableGPU(const vk::Instance& instance, const vk::SurfaceKHR& surface);
+    selectSuitableGPU(const vk::Instance& instance,
+                      const std::vector<const char*>& required_extensions,
+                      const vk::SurfaceKHR& surface);
 
     /* Helper Functions */
 

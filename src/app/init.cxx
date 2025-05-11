@@ -35,15 +35,14 @@ namespace app::init {
         return vk::createInstance(instance_info);
     }
 
-    GPU selectSuitableGPU(const vk::Instance& instance, const vk::SurfaceKHR& surface)
+    GPU selectSuitableGPU(const vk::Instance& instance,
+                          const std::vector<const char*>& required_extensions,
+                          const vk::SurfaceKHR& surface)
     {
         // Query available physical devices
         const auto candidate_devices = instance.enumeratePhysicalDevices();
         if (candidate_devices.empty())
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
-
-        // Prepare the required extension list
-        const std::vector<const char*> required_extensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
         // Locate the best GPU
         std::optional<GPU> best_gpu{ std::nullopt };
