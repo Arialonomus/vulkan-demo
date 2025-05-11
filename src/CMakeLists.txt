@@ -11,3 +11,4 @@ target_link_libraries( vulkan_demo PRIVATE
 )
 
 add_subdirectory( app )
+add_subdirectory( util )
