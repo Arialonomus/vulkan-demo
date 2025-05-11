@@ -9,7 +9,8 @@ import vulkan_hpp;
 namespace app::init {
     /* Vulkan Initialization Functions */
 
-    export vk::Instance createVulkanInstance();
+    export [[nodiscard]] vk::Instance
+    createVulkanInstance();
 
     /* Helper Functions */
 
@@ -19,7 +20,8 @@ namespace app::init {
      * @return a std::vector containing a list of enabled extension names
      * @throws std::runtime_error if any required extensions are not supported by the target vulkan implementation
      */
-    std::vector<const char*> enumerateEnabledInstanceExtensions();
+    [[nodiscard]] std::vector<const char*>
+    enumerateEnabledInstanceExtensions();
 
     /**
      * Returns a list of required instance extensions not supported by the target Vulkan implementation, if any
@@ -27,7 +29,8 @@ namespace app::init {
      * @return a std::vector containing the names (if any) of unsupported extensions, returns an empty vector if
      * all required extensions are supported
      */
-    std::vector<const char*> getUnsupportedInstanceExtensions(const std::vector<const char*>& targeted_extensions);
+    [[nodiscard]] std::vector<const char*>
+    getUnsupportedInstanceExtensions(const std::vector<const char*>& targeted_extensions);
 }
 
 
