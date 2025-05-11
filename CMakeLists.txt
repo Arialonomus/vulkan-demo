@@ -61,7 +61,10 @@ target_link_libraries( vkfw-module PRIVATE
         vkfw::vkfw
         vulkan_hpp-module
 )
-target_compile_definitions( vkfw-module PRIVATE VKFW_ENABLE_VULKAN_HPP_MODULE )
+target_compile_definitions( vkfw-module PRIVATE
+        VKFW_ENABLE_VULKAN_HPP_MODULE
+        VKFW_NO_STRUCT_CONSTRUCTORS
+)
 
 # GLM Module Wrapper Library
 set( GLM_INCLUDE_DIR "${VCPKG_INCLUDE_DIR}/glm" )
