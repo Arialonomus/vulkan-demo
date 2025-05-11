@@ -1,5 +1,8 @@
 module;
 
+#include <vector>
+#include <format>
+
 #include "vkfw/vkfw.hpp"
 
 module app;
@@ -25,7 +28,7 @@ namespace app {
 
     void App::initVulkan()
     {
-        const vk::ApplicationInfo app_info(
+        constexpr vk::ApplicationInfo app_info(
             "Hello Triangle",
             vk::makeApiVersion(0, 0, 1, 0),
             "No Engine",
@@ -34,7 +37,7 @@ namespace app {
         );
 
         // List desired layers
-        const std::vector<const char*> enabled_layers{ };
+        constexpr std::vector<const char*> enabled_layers{ };
 
         // Query required instance extensions
         const auto glfw_extensions = vkfw::getRequiredInstanceExtensions();
@@ -54,8 +57,9 @@ namespace app {
         }
 
         // Create the Vulkan instance
+        constexpr vk::InstanceCreateFlags flags{ };
         const vk::InstanceCreateInfo instance_info(
-            {},
+            flags,
             &app_info,
             enabled_layers,
             enabled_extensions
