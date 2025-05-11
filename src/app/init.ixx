@@ -24,6 +24,7 @@ namespace app::init {
     /**
      * Selects the best available Physical Device in the system and returns a corresponding GPU object
      * @param instance the Vulkan instance object
+     * @param required_extensions the extensions required for the candidate device
      * @param surface the target surface for swap chain rendering
      * @return a newly instantiated GPU object corresponding to the best-suited Physical Device on the system
      */
