@@ -44,6 +44,15 @@ namespace app {
             util::flattenToVector<const char*>(glfw_extensions)
         };
 
+        // Ensure all required extensions are supported
+        const auto unsupported_extensions = getUnsupportedInstanceExtensions(enabled_extensions);
+        if (!unsupported_extensions.empty()) {
+            throw std::runtime_error(std::format(
+                "the following required instance extensions are not "
+                "supported by the target Vulkan implementation:\n\t{}", unsupported_extensions
+            ));
+        }
+
         // Create the Vulkan instance
         const vk::InstanceCreateInfo instance_info(
             {},
@@ -81,5 +90,24 @@ namespace app {
         // Clean up GLFW resources
         m_window.destroy();
         vkfw::terminate();
+    }
+
+    std::vector<const char*> App::getUnsupportedInstanceExtensions(const std::vector<const char*>& targeted_extensions)
+    {
+        std::vector<const char*> unsupported_extensions{ targeted_extensions };
+        const std::vector<vk::ExtensionProperties> supported_extensions{ vk::enumerateInstanceExtensionProperties() };
+
+        // Remove supported extensions from the list until it is empty or all supported extensions have been checked
+        auto current_extension{ supported_extensions.begin() };
+        while (current_extension != supported_extensions.end() && !unsupported_extensions.empty()) {
+            const char* extension_name{ current_extension->extensionName };
+            std::erase_if(unsupported_extensions,
+                          [extension_name](const char* targeted) {
+                              return std::strcmp(extension_name, targeted) == 0;
+                          });
+            ++current_extension;
+        }
+
+        return unsupported_extensions;
     }
 }
