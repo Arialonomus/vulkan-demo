@@ -6,6 +6,7 @@ module;
 
 export module gpu;
 
+// External Dependencies
 import vulkan_hpp;
 
 namespace app {
@@ -40,6 +41,15 @@ namespace app {
             findQueueFamilies(surface);
         }
 
+        /* Device Creation Methods */
+
+        /**
+         * Creates a logical device object corresponding to the passed-in GPU configured to the program needs
+         * @param required_extensions the extensions required for the candidate device
+         * @return a newly instantiated logical Device object configured for the program
+         */
+        [[nodiscard]] vk::Device createLogicalDevice(const std::vector<const char*>& required_extensions) const;
+
         /* Accessors */
 
         [[nodiscard]] std::uint32_t getGraphicsFamilyIndex() const
@@ -47,6 +57,9 @@ namespace app {
 
         [[nodiscard]] std::uint32_t getPresentFamilyIndex() const
         { return m_queue_family_indices.present.value(); }
+
+        [[nodiscard]] const vk::PhysicalDeviceFeatures& getFeatures() const
+        { return m_features; }
 
         /* Device Functionality Queries */
 

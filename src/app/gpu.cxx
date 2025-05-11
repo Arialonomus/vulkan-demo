@@ -4,9 +4,47 @@ module;
 
 module gpu;
 
+// Internal Dependencies
 import vulkan_utils;
 
 namespace app {
+    vk::Device GPU::createLogicalDevice(const std::vector<const char*>& required_extensions) const
+    {
+        std::vector<vk::DeviceQueueCreateInfo> queues;
+
+        // Instantiate graphics queue
+        constexpr vk::DeviceQueueCreateFlags graphics_queue_flags{ };
+        const vk::DeviceQueueCreateInfo graphics_queue_info(
+            graphics_queue_flags,
+            this->getGraphicsFamilyIndex(),
+            1.0f
+        );
+        queues.push_back(graphics_queue_info);
+
+        // Handle case where Graphics and Present queue are different families
+        if (this->getPresentFamilyIndex() != this->getGraphicsFamilyIndex()) {
+            constexpr vk::DeviceQueueCreateFlags present_queue_flags{ };
+            const vk::DeviceQueueCreateInfo present_queue_info(
+                present_queue_flags,
+                this->getGraphicsFamilyIndex(),
+                1.0f
+            );
+            queues.push_back(present_queue_info);
+        }
+
+        // Instantiate logical device
+        constexpr vk::DeviceCreateFlags device_flags{ };
+        const vk::DeviceCreateInfo device_info(
+            device_flags,
+            queues,
+            {},     // Deprecated pEnabledLayerNames parameter
+            required_extensions,
+            &this->getFeatures()
+        );
+
+        return m_device.createDevice(device_info);
+    }
+
     bool GPU::isDiscreteGPU() const
     {
         return m_properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu;
