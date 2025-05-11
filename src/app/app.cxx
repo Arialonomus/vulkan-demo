@@ -34,7 +34,7 @@ namespace app {
 
         // Create the logical device
         m_gpu = init::selectSuitableGPU(m_vk_instance, required_extensions, m_surface);
-        m_device = init::createLogicalDevice(m_gpu, required_extensions);
+        m_device = m_gpu.createLogicalDevice(required_extensions);
     }
 
     void App::initWindow(const vk::Extent2D& window_size)
