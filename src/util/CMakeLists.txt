@@ -10,4 +10,5 @@ target_sources( util-module
         FILES
             concepts.cxxm
             container_utils.cxxm
+            vulkan_utils.cxxm
 )

@@ -1,0 +1,7 @@
+export module vulkan_utils;
+
+import vulkan_hpp;
+
+namespace util {
+
+}
