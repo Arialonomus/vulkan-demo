@@ -4,13 +4,26 @@ module;
 
 export module init;
 
+// External Dependencies
 import vulkan_hpp;
+
+// Internal Dependencies
+import gpu;
 
 namespace app::init {
     /* Vulkan Initialization Functions */
 
     export [[nodiscard]] vk::Instance
     createVulkanInstance();
+
+    /**
+     * Selects the best available Physical Device in the system and returns a corresponding GPU object
+     * @param instance the Vulkan instance object
+     * @param surface the target surface for swap chain rendering
+     * @return a newly instantiated GPU object corresponding to the best-suited Physical Device on the system
+     */
+    export [[nodiscard]] GPU
+    selectSuitableGPU(const vk::Instance& instance, const vk::SurfaceKHR& surface);
 
     /* Helper Functions */
 

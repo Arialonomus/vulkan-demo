@@ -7,9 +7,11 @@ module;
 
 module init;
 
+// External Dependencies
 // import vkfw;
 import vulkan_hpp;
 
+// Internal Dependencies
 import list_utils;
 
 namespace app::init {
@@ -34,6 +36,13 @@ namespace app::init {
             enabled_extensions
         );
         return vk::createInstance(instance_info);
+    }
+
+    GPU selectSuitableGPU(const vk::Instance& instance, const vk::SurfaceKHR& surface)
+    {
+        const auto candidate_devices = instance.enumeratePhysicalDevices();
+        if (candidate_devices.empty())
+            throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
     }
 
     std::vector<const char*> enumerateEnabledInstanceExtensions()
