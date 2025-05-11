@@ -1,5 +1,7 @@
 module;
 
+#include <vector>
+
 #include "vkfw/vkfw.hpp"
 
 export module app;
