@@ -8,6 +8,6 @@ target_sources( util-module
         PUBLIC
             FILE_SET CXX_MODULES
         FILES
-            concepts.cppm
-            list_utils.cppm
+            concepts.cxxm
+            list_utils.cxxm
 )
