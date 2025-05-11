@@ -13,6 +13,11 @@ import gpu;
 namespace app::init {
     /* Vulkan Initialization Functions */
 
+    /**
+     * Validates if the target Vulkan implementation supports the application's needs and, if so, creates
+     * a Vulkan instance object
+     * @return a newly created Vulkan instance object configured for the program
+     */
     export [[nodiscard]] vk::Instance
     createVulkanInstance();
 
