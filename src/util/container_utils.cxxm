@@ -2,7 +2,7 @@ module;
 
 #include <vector>
 
-export module list_utils;
+export module container_utils;
 
 import concepts;
 
@@ -14,7 +14,8 @@ namespace util {
      * @return the size, bytes, of the container
      */
     template <typename Container>
-    constexpr auto getContainerSize(const Container& container) -> size_t {
+    constexpr size_t getContainerSize(const Container& container)
+    {
         if constexpr (requires { container.size(); }) {
             return container.size();
         } else {
@@ -30,7 +31,8 @@ namespace util {
      * @return a std::vector containing all elements in the passed-in containers
      */
     export template <typename T, concepts::CompatibleRange<T>... Containers>
-    auto flattenToVector(const Containers&... containers) -> std::vector<T> {
+    std::vector<T> flattenToVector(const Containers&... containers)
+    {
         // Estimate total size and reserve
         size_t total_size = (getContainerSize(containers) + ...);
         std::vector<T> result;
