@@ -1,7 +1,35 @@
+module;
+
+#include <set>
+#include <string>
+#include <vector>
+
 export module vulkan_utils;
 
 import vulkan_hpp;
 
 namespace util {
+    /**
+     * Compares a list of required extensions against a list of supported extensions and returns a list
+     * of unsupported extensions (if any)
+     * @param required_extensions the list of required extension names, enumerated as C-strings
+     * @param supported_extensions the list of supported extensions, enumerated as vk::ExtensionProperties structs
+     * @return a std::set containing the names of the unsupported extensions, if any
+     */
+    export [[nodiscard]] std::set<std::string>
+    getUnsupportedExtensions(const std::vector<const char*>& required_extensions,
+                             const std::vector<vk::ExtensionProperties>& supported_extensions)
+    {
+        // Build a set to remove any duplicate extension names
+        std::set<std::string> unsupported_extensions{ required_extensions.begin(), required_extensions.end() };
 
+        // Remove supported extensions from the list until it is empty or all supported extensions have been checked
+        auto current_extension{ supported_extensions.begin() };
+        while (current_extension != supported_extensions.end() && !unsupported_extensions.empty()) {
+            unsupported_extensions.erase(current_extension->extensionName);
+            ++current_extension;
+        }
+
+        return unsupported_extensions;
+    }
 }
