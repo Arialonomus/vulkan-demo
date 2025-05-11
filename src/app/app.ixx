@@ -4,8 +4,12 @@ module;
 
 export module app;
 
+// External Dependencies
 // import vkfw;
 import vulkan_hpp;
+
+// Internal Dependencies
+import gpu;
 
 namespace app {
     export constexpr vk::Extent2D WINDOW_SIZE{ 1280, 720 };    // Constant for tutorial usage
@@ -13,7 +17,7 @@ namespace app {
     export class App
     {
     public:
-        /* Execution */
+        /* Program Execution Methods */
 
         void run();
 
@@ -23,6 +27,7 @@ namespace app {
         vkfw::Window m_window;
         vk::Instance m_vk_instance;
         vk::SurfaceKHR m_surface;
+        GPU m_gpu;
 
         /* Initialization Methods */
 
@@ -37,7 +42,7 @@ namespace app {
          */
         void initVulkan();
 
-        /* Execution Methods */
+        /* Program Loop Methods */
 
         void mainLoop();
 

@@ -4,9 +4,11 @@ module;
 
 module app;
 
+// External Dependencies
 // import vkfw;
 import vulkan_hpp;
 
+// Internal Dependencies
 import init;
 
 namespace app {
@@ -27,6 +29,7 @@ namespace app {
     {
         m_vk_instance = init::createVulkanInstance();
         m_surface = vkfw::createWindowSurface(m_vk_instance, m_window);
+        m_gpu = init::selectSuitableGPU(m_vk_instance, m_surface);
     }
 
     void App::initWindow(const vk::Extent2D& window_size)
