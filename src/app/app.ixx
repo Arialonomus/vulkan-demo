@@ -28,6 +28,7 @@ namespace app {
         vk::Instance m_vk_instance;
         vk::SurfaceKHR m_surface;
         GPU m_gpu;
+        vk::Device m_device;
 
         /* Initialization Methods */
 
