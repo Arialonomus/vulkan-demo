@@ -12,3 +12,7 @@ target_sources( util-module
             container_utils.cxxm
             vulkan_utils.cxxm
 )
+
+target_link_libraries( util-module PRIVATE
+        vulkan_hpp-module
+)
