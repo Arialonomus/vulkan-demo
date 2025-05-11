@@ -23,9 +23,21 @@ namespace app::init {
             vk::ApiVersion14
         );
 
-        // List desired layers
         constexpr std::vector<const char*> enabled_layers{ };
+        const std::vector<const char*> enabled_extensions = enumerateEnabledInstanceExtensions();
+        constexpr vk::InstanceCreateFlags flags{ };
 
+        const vk::InstanceCreateInfo instance_info(
+            flags,
+            &app_info,
+            enabled_layers,
+            enabled_extensions
+        );
+        return vk::createInstance(instance_info);
+    }
+
+    std::vector<const char*> enumerateEnabledInstanceExtensions()
+    {
         // Query required instance extensions
         const auto glfw_extensions = vkfw::getRequiredInstanceExtensions();
 
@@ -43,15 +55,7 @@ namespace app::init {
             ));
         }
 
-        // Create the Vulkan instance
-        constexpr vk::InstanceCreateFlags flags{ };
-        const vk::InstanceCreateInfo instance_info(
-            flags,
-            &app_info,
-            enabled_layers,
-            enabled_extensions
-        );
-        return vk::createInstance(instance_info);
+        return enabled_extensions;
     }
 
     std::vector<const char*> getUnsupportedInstanceExtensions(const std::vector<const char*>& targeted_extensions)
