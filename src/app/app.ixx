@@ -22,6 +22,7 @@ namespace app {
 
         vkfw::Window m_window;
         vk::Instance m_vk_instance;
+        vk::SurfaceKHR m_surface;
 
         /* Initialization Methods */
 

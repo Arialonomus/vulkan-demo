@@ -26,6 +26,7 @@ namespace app {
     void App::initVulkan()
     {
         m_vk_instance = init::createVulkanInstance();
+        m_surface = vkfw::createWindowSurface(m_vk_instance, m_window);
     }
 
     void App::initWindow(const vk::Extent2D& window_size)
@@ -50,6 +51,7 @@ namespace app {
     void App::cleanup()
     {
         // Clean up Vulkan resources
+        m_vk_instance.destroySurfaceKHR(m_surface);
         m_vk_instance.destroy();
 
         // Clean up GLFW resources
