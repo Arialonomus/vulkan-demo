@@ -7,10 +7,6 @@ module;
 
 module init;
 
-// External Dependencies
-// import vkfw;
-import vulkan_hpp;
-
 // Internal Dependencies
 import container_utils;
 import vulkan_utils;
@@ -41,9 +37,36 @@ namespace app::init {
 
     GPU selectSuitableGPU(const vk::Instance& instance, const vk::SurfaceKHR& surface)
     {
+        // Query available physical devices
         const auto candidate_devices = instance.enumeratePhysicalDevices();
         if (candidate_devices.empty())
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
+
+        // Prepare the required extension list
+        const std::vector<const char*> required_extensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+        // Locate the best GPU
+        std::optional<GPU> best_gpu{ std::nullopt };
+        for (const auto& device : candidate_devices) {
+            GPU gpu{ device, surface };
+            const bool meets_minimum_requirements{
+                gpu.supportsGraphicsQueues()
+                && gpu.supportsPresentationQueues()
+                && gpu.supportsRequiredExtensions(required_extensions)
+                && gpu.meetsSwapChainRequirements(surface)
+            };
+            if (meets_minimum_requirements)
+                best_gpu = gpu;
+            if (gpu.isDiscreteGPU() || gpu.getGraphicsFamilyIndex() == gpu.getPresentFamilyIndex())
+                best_gpu = gpu;
+            if (gpu.isDiscreteGPU() && gpu.getGraphicsFamilyIndex() == gpu.getPresentFamilyIndex())
+                best_gpu = gpu;
+        }
+
+        if (!best_gpu.has_value())
+            throw std::runtime_error("unable to locate a suitable GPU");
+
+        return best_gpu.value();
     }
 
     std::vector<const char*> enumerateEnabledInstanceExtensions()
