@@ -8,9 +8,12 @@ set(VCPKG_OVERLAY_PORTS "${CMAKE_SOURCE_DIR}/vcpkg-ports")
 set(VCPKG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/cmake-build-debug-clang/vcpkg_installed/x64-linux/include")
 
 # C++ Standard and Compiler Info
-set( CMAKE_CXX_COMPILER /usr/bin/clang++ )
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+    add_compile_options( -stdlib=libc++ )
+    add_link_options( -stdlib=libc++ -lc++abi )
+endif()
 set( CMAKE_CXX_SCAN_FOR_MODULES ON )
-set( CMAKE_CXX_FLAGS_INIT "-stdlib=libc++ -lc++abi" )
+set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 
 set( CMAKE_CXX_STANDARD 23 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
@@ -53,7 +56,7 @@ target_sources( vkfw-module PUBLIC
         BASE_DIRS ${VKFW_INCLUDE_DIR}
         FILES ${VKFW_INCLUDE_DIR}/vkfw.cppm
 )
-target_compile_features( vulkan_hpp-module PUBLIC cxx_std_20 )
+target_compile_features( vkfw-module PUBLIC cxx_std_20 )
 target_link_libraries( vkfw-module PRIVATE
         vkfw::vkfw
         vulkan_hpp-module
