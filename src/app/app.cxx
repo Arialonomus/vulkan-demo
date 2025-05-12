@@ -35,6 +35,10 @@ namespace app {
         // Create the logical device
         m_gpu = init::selectSuitableGPU(m_vk_instance, required_extensions, m_surface);
         m_device = m_gpu.createLogicalDevice(required_extensions);
+
+        // Get queue handles
+        m_graphics_queue = m_device.getQueue(m_gpu.getGraphicsFamilyIndex(), 0);
+        m_present_queue = m_device.getQueue(m_gpu.getPresentFamilyIndex(), 0);
     }
 
     void App::initWindow(const vk::Extent2D& window_size)
