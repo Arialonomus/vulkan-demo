@@ -52,14 +52,20 @@ namespace eng {
 
         /* Accessors */
 
+        [[nodiscard]] const vk::PhysicalDevice& getDevice() const
+        { return m_device; }
+
+        [[nodiscard]] const vk::PhysicalDeviceProperties& getProperties() const
+        { return m_properties; }
+
+        [[nodiscard]] const vk::PhysicalDeviceFeatures& getFeatures() const
+        { return m_features; }
+
         [[nodiscard]] std::uint32_t getGraphicsFamilyIndex() const
         { return m_queue_family_indices.graphics.value(); }
 
         [[nodiscard]] std::uint32_t getPresentFamilyIndex() const
         { return m_queue_family_indices.present.value(); }
-
-        [[nodiscard]] const vk::PhysicalDeviceFeatures& getFeatures() const
-        { return m_features; }
 
         /* Device Functionality Queries */
 
