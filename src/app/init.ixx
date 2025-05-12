@@ -28,7 +28,7 @@ namespace app::init {
      * @param surface the target surface for swap chain rendering
      * @return a newly instantiated GPU object corresponding to the best-suited Physical Device on the system
      */
-    export [[nodiscard]] GPU
+    export [[nodiscard]] eng::GPU
     selectSuitableGPU(const vk::Instance& instance,
                       const std::vector<const char*>& required_extensions,
                       const vk::SurfaceKHR& surface);

@@ -7,7 +7,7 @@ module gpu;
 // Internal Dependencies
 import vulkan_utils;
 
-namespace app {
+namespace eng {
     vk::Device GPU::createLogicalDevice(const std::vector<const char*>& required_extensions) const
     {
         std::vector<vk::DeviceQueueCreateInfo> queues;

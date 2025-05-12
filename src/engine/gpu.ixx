@@ -9,7 +9,7 @@ export module gpu;
 // External Dependencies
 import vulkan_hpp;
 
-namespace app {
+namespace eng {
     /**
      * Represents the indices of Vulkan queue families that are needed for executing specific operations.
      * The indices are stored as optional values to allow verification of their assignment.

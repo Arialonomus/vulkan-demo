@@ -27,7 +27,7 @@ namespace app {
         vkfw::Window m_window;
         vk::Instance m_vk_instance;
         vk::SurfaceKHR m_surface;
-        GPU m_gpu;
+        eng::GPU m_gpu;
         vk::Device m_device;
         vk::Queue m_graphics_queue;
         vk::Queue m_present_queue;
