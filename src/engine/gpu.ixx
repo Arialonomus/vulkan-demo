@@ -19,9 +19,7 @@ namespace eng {
         std::optional<std::uint32_t> present{ std::nullopt };
 
         [[nodiscard]] bool isFullyPopulated() const
-        { return
-            graphics.has_value()
-            && present.has_value(); }
+        { return graphics.has_value() && present.has_value(); }
     };
 
     export class GPU
@@ -48,7 +46,7 @@ namespace eng {
          * @param required_extensions the extensions required for the candidate device
          * @return a newly instantiated logical Device object configured for the program
          */
-        [[nodiscard]] vk::Device createLogicalDevice(const std::vector<const char*>& required_extensions) const;
+        [[nodiscard]] vk::Device createLogicalDevice(std::span<const char* const> required_extensions) const;
 
         /* Accessors */
 
@@ -75,7 +73,7 @@ namespace eng {
 
         [[nodiscard]] bool supportsPresentationQueues() const;
 
-        [[nodiscard]] bool supportsRequiredExtensions(const std::vector<const char*>& required_extensions) const;
+        [[nodiscard]] bool supportsRequiredExtensions(std::span<const char* const> required_extensions) const;
 
         [[nodiscard]] bool meetsSwapChainRequirements(const vk::SurfaceKHR& surface) const;
 

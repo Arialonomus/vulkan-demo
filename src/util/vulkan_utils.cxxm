@@ -6,6 +6,7 @@ module;
 
 export module vulkan_utils;
 
+// External Dependencies
 import vulkan_hpp;
 
 namespace util {
@@ -17,8 +18,8 @@ namespace util {
      * @return a std::set containing the names of the unsupported extensions, if any
      */
     export [[nodiscard]] std::set<std::string>
-    getUnsupportedExtensions(const std::vector<const char*>& required_extensions,
-                             const std::vector<vk::ExtensionProperties>& supported_extensions)
+    getUnsupportedExtensions(std::span<const char* const> required_extensions,
+                             std::span<const vk::ExtensionProperties> supported_extensions)
     {
         // Build a set to remove any duplicate extension names
         std::set<std::string> unsupported_extensions{ required_extensions.begin(), required_extensions.end() };

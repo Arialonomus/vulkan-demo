@@ -8,7 +8,7 @@ module gpu;
 import vulkan_utils;
 
 namespace eng {
-    vk::Device GPU::createLogicalDevice(const std::vector<const char*>& required_extensions) const
+    vk::Device GPU::createLogicalDevice(const std::span<const char* const> required_extensions) const
     {
         std::vector<vk::DeviceQueueCreateInfo> queues;
 
@@ -60,7 +60,7 @@ namespace eng {
         return m_queue_family_indices.present.has_value();
     }
 
-    bool GPU::supportsRequiredExtensions(const std::vector<const char*>& required_extensions) const
+    bool GPU::supportsRequiredExtensions(const std::span<const char* const> required_extensions) const
     {
         const auto supported_extensions{ m_device.enumerateDeviceExtensionProperties() };
         return util::getUnsupportedExtensions(required_extensions, supported_extensions).empty();
