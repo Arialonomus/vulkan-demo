@@ -35,12 +35,10 @@ namespace eng::init {
         return vk::createInstance(instance_info);
     }
 
-    GPU selectSuitableGPU(const vk::Instance& instance,
-                          const std::vector<const char*>& required_extensions,
+    GPU selectSuitableGPU(const std::span<const vk::PhysicalDevice> candidate_devices,
+                          const std::span<const char* const> required_extensions,
                           const vk::SurfaceKHR& surface)
     {
-        // Query available physical devices
-        const auto candidate_devices = instance.enumeratePhysicalDevices();
         if (candidate_devices.empty())
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
 

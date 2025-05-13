@@ -23,14 +23,14 @@ namespace eng::init {
 
     /**
      * Selects the best available Physical Device in the system and returns a corresponding GPU object
-     * @param instance the Vulkan instance object
+     * @param candidate_devices the list of Vulkan-compatible physical devices on the system
      * @param required_extensions the extensions required for the candidate device
      * @param surface the target surface for swap chain rendering
      * @return a newly instantiated GPU object corresponding to the best-suited Physical Device on the system
      */
     export [[nodiscard]] GPU
-    selectSuitableGPU(const vk::Instance& instance,
-                      const std::vector<const char*>& required_extensions,
+    selectSuitableGPU(std::span<const vk::PhysicalDevice> candidate_devices,
+                      std::span<const char* const> required_extensions,
                       const vk::SurfaceKHR& surface);
 
     /* Helper Functions */
