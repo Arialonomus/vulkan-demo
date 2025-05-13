@@ -11,7 +11,7 @@ module init;
 import container_utils;
 import vulkan_utils;
 
-namespace app::init {
+namespace eng::init {
     vk::Instance createVulkanInstance()
     {
         constexpr vk::ApplicationInfo app_info(
@@ -35,7 +35,7 @@ namespace app::init {
         return vk::createInstance(instance_info);
     }
 
-    eng::GPU selectSuitableGPU(const vk::Instance& instance,
+    GPU selectSuitableGPU(const vk::Instance& instance,
                           const std::vector<const char*>& required_extensions,
                           const vk::SurfaceKHR& surface)
     {
@@ -45,9 +45,9 @@ namespace app::init {
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
 
         // Locate the best GPU
-        std::optional<eng::GPU> best_gpu{ std::nullopt };
+        std::optional<GPU> best_gpu{ std::nullopt };
         for (const auto& device : candidate_devices) {
-            eng::GPU gpu{ device, surface };
+            GPU gpu{ device, surface };
             const bool meets_minimum_requirements{
                 gpu.supportsGraphicsQueues()
                 && gpu.supportsPresentationQueues()

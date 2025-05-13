@@ -9,11 +9,23 @@ target_sources( engine-module
             FILE_SET CXX_MODULES
             TYPE CXX_MODULES
             FILES
+                init.ixx
                 gpu.ixx
+                swapchain.ixx
         PRIVATE
+            init.cxx
             gpu.cxx
+            swapchain.cxx
 )
 
+# Internal Libraries
 target_link_libraries( engine-module PRIVATE
         util-module
+)
+
+# External Dependencies
+target_link_libraries( engine-module PRIVATE
+        vkfw::vkfw
+        # vkfw-module
+        vulkan_hpp-module
 )
