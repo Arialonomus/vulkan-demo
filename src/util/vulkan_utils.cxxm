@@ -9,6 +9,9 @@ export module vulkan_utils;
 // External Dependencies
 import vulkan_hpp;
 
+// Internal Dependencies
+import concepts;
+
 namespace util {
     /**
      * Compares a list of required extensions against a list of supported extensions and returns a list
@@ -32,5 +35,18 @@ namespace util {
         }
 
         return unsupported_extensions;
+    }
+
+    /**
+     * Converts an object encapsulating extent values into a Vulkan Extent2D object
+     * @tparam T any object with 2 attributes convertible to uint32_t
+     * @param input the object to be converted
+     * @return a vk::Extent2D object holding the converted values
+     */
+    export template <concepts::ConvertibleToExtent2D T>
+    [[nodiscard]] vk::Extent2D toExtent2D(T input)
+    {
+        const auto [ width, height ] = input;
+        return vk::Extent2D{ static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
     }
 }
