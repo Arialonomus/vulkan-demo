@@ -13,21 +13,23 @@ namespace eng {
         std::vector<vk::DeviceQueueCreateInfo> queues;
 
         // Instantiate graphics queue
-        constexpr vk::DeviceQueueCreateFlags graphics_queue_flags{ };
+        constexpr vk::DeviceQueueCreateFlags graphics_flags{ };
+        constexpr std::array graphics_priorities{ 1.0f };
         const vk::DeviceQueueCreateInfo graphics_queue_info(
-            graphics_queue_flags,
+            graphics_flags,
             this->getGraphicsFamilyIndex(),
-            1.0f
+            graphics_priorities     // Number of queues to create is derived from number of priorities in array
         );
         queues.push_back(graphics_queue_info);
 
         // Handle case where Graphics and Present queue are different families
         if (this->getPresentFamilyIndex() != this->getGraphicsFamilyIndex()) {
-            constexpr vk::DeviceQueueCreateFlags present_queue_flags{ };
+            constexpr vk::DeviceQueueCreateFlags present_flags{ };
+            constexpr std::array present_priorities{ 1.0f };
             const vk::DeviceQueueCreateInfo present_queue_info(
-                present_queue_flags,
+                present_flags,
                 this->getGraphicsFamilyIndex(),
-                1.0f
+                present_priorities
             );
             queues.push_back(present_queue_info);
         }
@@ -41,7 +43,6 @@ namespace eng {
             required_extensions,
             &this->getFeatures()
         );
-
         return m_device.createDevice(device_info);
     }
 
