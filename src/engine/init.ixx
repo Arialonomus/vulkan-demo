@@ -43,6 +43,14 @@ namespace eng::init {
      */
     [[nodiscard]] std::vector<const char*>
     enumerateEnabledInstanceExtensions();
+
+    /**
+     * Selects the best GPU from a list of GPUs which meet the minimum engine requirements
+     * @param candidate_gpus the list of viable GPU candidates
+     * @return the best GPU from the candidates
+     */
+    [[nodiscard]] GPU
+    selectBestGPU(std::span<const GPU> candidate_gpus);
 }
 
 

@@ -43,7 +43,7 @@ namespace eng::init {
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
 
         // Locate the best GPU
-        std::optional<GPU> best_gpu{ std::nullopt };
+        std::vector<GPU> viable_gpus{ };
         for (const auto& device : candidate_devices) {
             GPU gpu{ device, surface };
             const bool meets_minimum_requirements{
@@ -53,17 +53,15 @@ namespace eng::init {
                 && gpu.meetsSwapChainRequirements(surface)
             };
             if (meets_minimum_requirements)
-                best_gpu = gpu;
-            if (gpu.isDiscreteGPU() || gpu.getGraphicsFamilyIndex() == gpu.getPresentFamilyIndex())
-                best_gpu = gpu;
-            if (gpu.isDiscreteGPU() && gpu.getGraphicsFamilyIndex() == gpu.getPresentFamilyIndex())
-                best_gpu = gpu;
+                viable_gpus.push_back(gpu);
         }
 
-        if (!best_gpu.has_value())
+        if (viable_gpus.empty())
             throw std::runtime_error("unable to locate a suitable GPU");
+        if (viable_gpus.size() == 1)
+            return viable_gpus.front();
 
-        return best_gpu.value();
+        return selectBestGPU(viable_gpus);
     }
 
     std::vector<const char*> enumerateEnabledInstanceExtensions()
@@ -87,5 +85,34 @@ namespace eng::init {
         }
 
         return enabled_extensions;
+    }
+
+    GPU selectBestGPU(const std::span<const GPU> candidate_gpus)
+    {
+        std::vector<std::pair<int, GPU>> gpu_scores(candidate_gpus.size());
+        for (const auto& gpu : candidate_gpus) {
+            int gpu_score{ 0 };
+
+            // Discrete GPUs (i.e., video cards) perform better than integrated GPUs
+            if (gpu.isDiscreteGPU())
+                gpu_score += 500;
+
+            // Performance is better when the Presentation and Graphics queue families are the same
+            if (gpu.getPresentFamilyIndex() == gpu.getGraphicsFamilyIndex())
+                gpu_score += 100;
+
+            // CPUs should only be used as a fallback when no other device is present,
+            // even if it scores the same as other devices
+            if (gpu.isCPU())
+                gpu_score = -1;
+
+            gpu_scores.emplace_back(gpu_score, gpu);
+        }
+
+        // Sort the GPUs by their scores
+        std::ranges::sort(gpu_scores, [](const auto& lhs, const auto& rhs) {
+            return lhs.first > rhs.first;
+        });
+        return gpu_scores.front().second;
     }
 }
