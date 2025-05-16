@@ -47,6 +47,9 @@ target_sources( vulkan_hpp-module PUBLIC
 )
 target_compile_features( vulkan_hpp-module PUBLIC cxx_std_20 )
 target_link_libraries( vulkan_hpp-module PUBLIC Vulkan::Vulkan )
+target_compile_definitions( vulkan_hpp-module PRIVATE
+        VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+)
 
 # VKFW Module Wrapper Library
 set( VKFW_INCLUDE_DIR "${VCPKG_INCLUDE_DIR}/vkfw" )
