@@ -9,10 +9,12 @@ target_sources( engine-module
             FILE_SET CXX_MODULES
             TYPE CXX_MODULES
             FILES
+                engine.ixx
                 init.ixx
                 gpu.ixx
                 swapchain.ixx
         PRIVATE
+            engine.cxx
             init.cxx
             gpu.cxx
             swapchain.cxx
