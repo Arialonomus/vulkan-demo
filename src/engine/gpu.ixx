@@ -67,6 +67,8 @@ namespace eng {
 
         /* Device Functionality Queries */
 
+        [[nodiscard]] bool isCPU() const;
+
         [[nodiscard]] bool isDiscreteGPU() const;
 
         [[nodiscard]] bool supportsGraphicsQueues() const;

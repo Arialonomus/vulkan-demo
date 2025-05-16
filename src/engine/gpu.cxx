@@ -45,6 +45,11 @@ namespace eng {
         return m_device.createDevice(device_info);
     }
 
+    bool GPU::isCPU() const
+    {
+        return m_properties.deviceType == vk::PhysicalDeviceType::eCpu;
+    }
+
     bool GPU::isDiscreteGPU() const
     {
         return m_properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu;
