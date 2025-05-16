@@ -14,10 +14,8 @@ target_sources( app-module
             TYPE CXX_MODULES
             FILES
                 app.ixx
-                init.ixx
         PRIVATE
             app.cxx
-            init.cxx
 )
 
 # Internal Libraries
@@ -28,7 +26,5 @@ target_link_libraries( app-module PUBLIC
 
 # External Dependencies
 target_link_libraries( app-module PRIVATE
-        vkfw::vkfw
-        # vkfw-module
-        vulkan_hpp-module
+        vkfw::vkfw # vkfw-module
 )

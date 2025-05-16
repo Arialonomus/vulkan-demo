@@ -5,18 +5,31 @@ module;
 export module app;
 
 // External Dependencies
-// import vkfw;
-import vulkan_hpp;
+//import vkfw;
 
 // Internal Dependencies
-import gpu;
+import engine;
 
 namespace app {
-    export constexpr vk::Extent2D WINDOW_SIZE{ 1280, 720 };    // Constant for tutorial usage
-
     export class App
     {
     public:
+        /* Constructor */
+
+        App()
+            : m_glfw_context{ },
+              m_window{
+                  1280,
+                  720,
+                  "Vulkan Demo",
+                  {
+                      .resizable = false,
+                      .clientAPI = vkfw::ClientAPI::eNone
+                  }
+              },
+              m_engine{ m_window }
+        {}
+
         /* Program Execution Methods */
 
         void run();
@@ -24,36 +37,12 @@ namespace app {
     private:
         /* Data Members */
 
-        vkfw::Window m_window;
-        vk::Instance m_vk_instance;
-        vk::SurfaceKHR m_surface;
-        eng::GPU m_gpu;
-        vk::Device m_device;
-        vk::Queue m_graphics_queue;
-        vk::Queue m_present_queue;
-
-        /* Initialization Methods */
-
-        /**
-         * Initializes a GLFW instance and creates a window
-         * @param window_size the 2D extent of the window, in pixels
-         */
-        void initWindow(const vk::Extent2D& window_size);
-
-        /**
-         * Creates a Vulkan instance with the required instance extensions
-         */
-        void initVulkan();
+        vkfw::raii::Instance m_glfw_context;
+        vkfw::raii::Window m_window;
+        eng::Engine m_engine;
 
         /* Program Loop Methods */
 
         void mainLoop();
-
-        /* Cleanup Methods */
-
-        /**
-         * Handles deletion of app-level objects, such as windows and the Vulkan instance
-         */
-        void cleanup();
     };
 }
