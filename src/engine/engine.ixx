@@ -31,5 +31,8 @@ namespace eng {
 
         std::vector<vk::SharedImage>        m_images;
         std::vector<vk::SharedImageView>    m_image_views;
+
+        vk::Queue m_graphics_queue;
+        vk::Queue m_present_queue;
     };
 }
