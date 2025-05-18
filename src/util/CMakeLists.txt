@@ -11,6 +11,7 @@ target_sources( util-module
             concepts.cxxm
             container_utils.cxxm
             vulkan_utils.cxxm
+            file_utils.cxxm
 )
 
 target_link_libraries( util-module PRIVATE
