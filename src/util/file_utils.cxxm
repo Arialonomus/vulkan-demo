@@ -1,0 +1,42 @@
+module;
+
+#include <vector>
+#include <fstream>
+#include <format>
+#include <stdexcept>
+
+export module file_utils;
+
+namespace util {
+    export using BytecodeBuffer = std::vector<uint32_t>;
+
+    export [[nodiscard]] BytecodeBuffer readSPVFile(const std::string_view file_path)
+    {
+        // Open file at the end to get size
+        std::ifstream file(file_path.data(), std::ios::ate | std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error(std::format("Failed to open shader file: {}", file_path));
+        }
+
+        // Valid SPIR-V bytecode must be a multiple of 4
+        const auto file_size = static_cast<size_t>(file.tellg());
+        if (file_size % sizeof(uint32_t) != 0) {
+            throw std::runtime_error(std::format(".spv file size ({} bytes) is not a multiple of 4", file_size));
+        }
+
+        // Read binary data in as chars first
+        std::vector<char> char_buffer(file_size);
+        file.seekg(0);
+        file.read(char_buffer.data(), file_size);
+        file.close();
+
+        // Convert to uint32_t (SPIR-V format)
+        const size_t code_size = file_size / sizeof(uint32_t);
+        BytecodeBuffer bytecode(code_size);
+
+        // Safely copy and convert the data
+        std::memcpy(bytecode.data(), char_buffer.data(), file_size);
+
+        return bytecode;
+    }
+}
