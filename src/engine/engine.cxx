@@ -15,8 +15,8 @@ namespace eng {
         // Select the candidate GPU and create the logical device
         const auto candidate_devices{ m_vk_instance->enumeratePhysicalDevices() };
         const std::vector required_device_extensions{
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-            VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME
+            vk::KHRSwapchainExtensionName,
+            vk::KHRDynamicRenderingExtensionName,
         };
         const vk::SharedSurfaceKHR surface{ vkfw::createWindowSurface(m_vk_instance, window), m_vk_instance };
         m_gpu = init::selectSuitableGPU(candidate_devices, required_device_extensions, surface);
