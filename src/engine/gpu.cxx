@@ -13,10 +13,9 @@ namespace eng {
         std::vector<vk::DeviceQueueCreateInfo> queues;
 
         // Instantiate graphics queue
-        constexpr vk::DeviceQueueCreateFlags graphics_flags{ };
         constexpr std::array graphics_priorities{ 1.0f };
         const vk::DeviceQueueCreateInfo graphics_queue_info(
-            graphics_flags,
+            vk::DeviceQueueCreateFlags{ },
             this->getGraphicsFamilyIndex(),
             graphics_priorities     // Number of queues to create is derived from number of priorities in array
         );
@@ -24,10 +23,9 @@ namespace eng {
 
         // Handle case where Graphics and Present queue are different families
         if (this->getPresentFamilyIndex() != this->getGraphicsFamilyIndex()) {
-            constexpr vk::DeviceQueueCreateFlags present_flags{ };
             constexpr std::array present_priorities{ 1.0f };
             const vk::DeviceQueueCreateInfo present_queue_info(
-                present_flags,
+                vk::DeviceQueueCreateFlags{ },
                 this->getGraphicsFamilyIndex(),
                 present_priorities
             );
@@ -35,14 +33,15 @@ namespace eng {
         }
 
         // Instantiate logical device
-        constexpr vk::DeviceCreateFlags device_flags{ };
-        const vk::DeviceCreateInfo device_info(
-            device_flags,
+        constexpr vk::PhysicalDeviceDynamicRenderingFeatures dynamic_rendering_enabled{true};
+        vk::DeviceCreateInfo device_info(
+            vk::DeviceCreateFlags{ },
             queues,
             {},     // Deprecated pEnabledLayerNames parameter
             required_extensions,
             &this->getFeatures()
         );
+        device_info.setPNext(&dynamic_rendering_enabled);
         return m_device.createDevice(device_info);
     }
 
