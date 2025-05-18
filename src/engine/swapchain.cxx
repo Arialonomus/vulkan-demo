@@ -16,12 +16,13 @@ namespace eng::swap {
     {
         const auto surface_capabilities{ gpu.getDevice().getSurfaceCapabilitiesKHR(surface) };
         const auto [ color_format, color_space ] = selectSurfaceFormat(gpu.getDevice().getSurfaceFormatsKHR(surface));
+        const auto image_extent{ getImageExtent(surface_capabilities, window_extent) };
         vk::SwapchainCreateInfoKHR create_info{ };
         create_info.setSurface( surface )
             .setMinImageCount( chooseImageCount(surface_capabilities) )
             .setImageFormat( color_format )
             .setImageColorSpace( color_space )
-            .setImageExtent( getImageExtent(surface_capabilities, window_extent) )
+            .setImageExtent( image_extent )
             .setImageArrayLayers( 1 )
             .setImageUsage( usage )
             .setPreTransform( surface_capabilities.currentTransform )
@@ -43,6 +44,7 @@ namespace eng::swap {
         const std::vector images{ device.getSwapchainImagesKHR(swapchain) };
         return {
             color_format,
+            image_extent,
             swapchain,
             images,
             createImageViews(images, color_format, device)

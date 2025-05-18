@@ -15,6 +15,7 @@ namespace eng::swap {
     export struct SwapchainComponents
     {
         vk::Format color_format;
+        vk::Extent2D extent;
         vk::SwapchainKHR swapchain;
         std::vector<vk::Image> images;
         std::vector<vk::ImageView> image_views;
@@ -24,7 +25,7 @@ namespace eng::swap {
 
     /**
      * Creates a new swapchain meeting minimum specifications
-     * @param gpu the tagret GPU
+     * @param gpu the target GPU
      * @param device the logical device which provides the presentation queue
      * @param surface the surface to which images will be presented
      * @param window_extent the extent of the window corresponding to the surface
