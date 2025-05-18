@@ -13,11 +13,13 @@ target_sources( engine-module
                 init.ixx
                 gpu.ixx
                 swapchain.ixx
+                pipeline.ixx
         PRIVATE
             engine.cxx
             init.cxx
             gpu.cxx
             swapchain.cxx
+            pipeline.cxx
 )
 
 # Internal Libraries
