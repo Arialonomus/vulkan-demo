@@ -82,10 +82,10 @@ namespace eng {
     private:
         /* Data Members */
 
-        vk::PhysicalDevice m_device;
-        vk::PhysicalDeviceProperties m_properties;
-        vk::PhysicalDeviceFeatures m_features;
-        QueueFamilyIndices m_queue_family_indices;
+        vk::PhysicalDevice              m_device;
+        vk::PhysicalDeviceProperties    m_properties;
+        vk::PhysicalDeviceFeatures      m_features;
+        QueueFamilyIndices              m_queue_family_indices;
 
         /* Helper Methods */
 
@@ -94,5 +94,9 @@ namespace eng {
          * @param surface the target surface for swap chain presentation, used to query Present Queue support
          */
         void findQueueFamilies(const vk::SurfaceKHR& surface);
+
+        [[nodiscard]] vk::DeviceQueueCreateInfo addDeviceQueue(uint32_t family_index,
+                                                               std::span<const float> priorities,
+                                                               vk::DeviceQueueCreateFlags flags = {}) const;
     };
 }

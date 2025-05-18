@@ -14,22 +14,12 @@ namespace eng {
 
         // Instantiate graphics queue
         constexpr std::array graphics_priorities{ 1.0f };
-        const vk::DeviceQueueCreateInfo graphics_queue_info(
-            vk::DeviceQueueCreateFlags{ },
-            this->getGraphicsFamilyIndex(),
-            graphics_priorities     // Number of queues to create is derived from number of priorities in array
-        );
-        queues.push_back(graphics_queue_info);
+        queues.push_back(addDeviceQueue(this->getGraphicsFamilyIndex(), graphics_priorities));
 
         // Handle case where Graphics and Present queue are different families
         if (this->getPresentFamilyIndex() != this->getGraphicsFamilyIndex()) {
             constexpr std::array present_priorities{ 1.0f };
-            const vk::DeviceQueueCreateInfo present_queue_info(
-                vk::DeviceQueueCreateFlags{ },
-                this->getGraphicsFamilyIndex(),
-                present_priorities
-            );
-            queues.push_back(present_queue_info);
+            queues.push_back(addDeviceQueue(this->getPresentFamilyIndex(), present_priorities));
         }
 
         // Instantiate logical device
@@ -86,5 +76,16 @@ namespace eng {
             if (m_device.getSurfaceSupportKHR(i, surface))
                 m_queue_family_indices.present = i;
         }
+    }
+
+    vk::DeviceQueueCreateInfo GPU::addDeviceQueue(const uint32_t family_index,
+                                                  const std::span<const float> priorities,
+                                                  const vk::DeviceQueueCreateFlags flags) const
+    {
+        return {
+            flags,
+            family_index,
+            priorities  // Number of queues to create is derived from number of priorities in array
+        };
     }
 }
