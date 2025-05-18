@@ -55,7 +55,8 @@ namespace eng::swap {
     {
         const auto min_images{ capabilities.minImageCount };
         const auto max_images{ capabilities.maxImageCount };
-        return min_images + 1 < max_images ? min_images + 1 : max_images;
+        const auto target_image_count{ min_images + 1 };
+        return target_image_count < max_images || max_images == 0 ? target_image_count : max_images;
     }
 
     vk::SurfaceFormatKHR selectSurfaceFormat(const std::span<const vk::SurfaceFormatKHR> supported_formats)
@@ -108,10 +109,9 @@ namespace eng::swap {
         };
     }
 
-    std::vector<vk::ImageView> createImageViews(
-        const std::span<const vk::Image> images,
-        const vk::Format& color_format,
-        const vk::Device& device)
+    std::vector<vk::ImageView> createImageViews(const std::span<const vk::Image> images,
+                                                const vk::Format& color_format,
+                                                const vk::Device& device)
     {
         std::vector<vk::ImageView> image_views;
         image_views.reserve(images.size());
