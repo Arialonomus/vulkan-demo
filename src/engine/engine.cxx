@@ -6,6 +6,7 @@ module engine;
 
 // Internal Dependencies
 import swapchain;
+import pipeline;
 
 namespace eng {
     Engine::Engine(const vkfw::Window& window)
@@ -35,7 +36,7 @@ namespace eng {
         std::ranges::transform( images,
                                 std::back_inserter(m_images),
                                 [this](const vk::Image image ) {
-                                    return vk::SharedImage{ image, m_device /*, vk::SwapchainOwns::yes */ };
+                                    return vk::SharedImage{ image, m_device, vk::SwapchainOwns::yes };
                                 } );
 
         m_image_views.reserve(image_views.size());
@@ -48,5 +49,19 @@ namespace eng {
         // Generate the queue handles
         m_graphics_queue = m_device->getQueue(m_gpu.getGraphicsFamilyIndex(), 0);
         m_present_queue = m_device->getQueue(m_gpu.getPresentFamilyIndex(), 0);
+
+        // Create the graphics pipeline object
+        const vk::PipelineRenderingCreateInfoKHR dynamic_rendering_info{
+            {},
+            color_format
+        };
+        m_pipeline_layout = vk::SharedPipelineLayout{ pipe::createPipelineLayout(m_device), m_device };
+        m_graphics_pipeline = vk::SharedPipeline{
+            pipe::createGraphicsPipeline(m_device,
+                                         m_pipeline_layout,
+                                         extent,
+                                         dynamic_rendering_info),
+            m_device
+        };
     }
 }

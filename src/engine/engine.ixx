@@ -11,7 +11,6 @@ import vulkan_hpp;
 // Internal Dependencies
 import init;
 import gpu;
-import swapchain;
 import vulkan_utils;
 
 namespace eng {
@@ -34,5 +33,8 @@ namespace eng {
 
         vk::Queue m_graphics_queue;
         vk::Queue m_present_queue;
+
+        vk::SharedPipelineLayout m_pipeline_layout;
+        vk::SharedPipeline       m_graphics_pipeline;
     };
 }
