@@ -20,6 +20,10 @@ namespace eng {
 
         explicit Engine(const vkfw::Window& window);
 
+        /* Rendering Calls */
+
+        void drawFrame();
+
     private:
         /* Data Members */
 

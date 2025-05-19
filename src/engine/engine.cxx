@@ -89,4 +89,9 @@ namespace eng {
         };
         cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, rendering_info);
     }
+
+    void Engine::drawFrame()
+    {
+
+    }
 }

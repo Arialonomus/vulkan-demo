@@ -18,6 +18,7 @@ namespace app {
     {
         while (!m_window.shouldClose()) {
             vkfw::pollEvents();
+            m_engine.drawFrame();
         }
     }
 }
