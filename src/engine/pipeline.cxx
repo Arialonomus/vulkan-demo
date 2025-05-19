@@ -16,7 +16,7 @@ namespace eng::pipe {
     vk::Pipeline createGraphicsPipeline(const vk::Device& device,
                                         const vk::PipelineLayout& layout,
                                         const vk::Extent2D& swapchain_extent,
-                                        const vk::PipelineRenderingCreateInfoKHR& dynamic_rendering_info,
+                                        const vk::PipelineRenderingCreateInfo& dynamic_rendering_info,
                                         vk::PipelineCreateFlags flags)
     {
         // Configure active shader stages
@@ -68,13 +68,13 @@ namespace eng::pipe {
             layout
         };
         create_info.setPNext(&dynamic_rendering_info);  // Dynamic rendering info must be attached in the pNext chain
-        if (const auto result{ device.createGraphicsPipeline({}, create_info) }; result.result == vk::Result::eSuccess) {
+        if (const auto pipeline{ device.createGraphicsPipeline({}, create_info) }; pipeline.result == vk::Result::eSuccess) {
             device.destroyShaderModule(vertex_shader_module);
             device.destroyShaderModule(fragment_shader_module);
-            return result.value;
+            return pipeline.value;
+        } else {
+            throw std::runtime_error("failed to create graphics pipeline");
         }
-
-        throw std::runtime_error("failed to create graphics pipeline");
     }
 
     vk::ShaderModule createShaderModule(const vk::Device& device,

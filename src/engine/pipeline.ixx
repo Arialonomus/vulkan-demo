@@ -14,7 +14,7 @@ namespace eng::pipe {
     export [[nodiscard]] vk::Pipeline createGraphicsPipeline(const vk::Device& device,
                                                              const vk::PipelineLayout& layout,
                                                              const vk::Extent2D& swapchain_extent,
-                                                             const vk::PipelineRenderingCreateInfoKHR& dynamic_rendering_info,
+                                                             const vk::PipelineRenderingCreateInfo& dynamic_rendering_info,
                                                              vk::PipelineCreateFlags flags = {});
 
     /* Creation Helper Methods */
