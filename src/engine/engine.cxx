@@ -7,6 +7,7 @@ module engine;
 // Internal Dependencies
 import swapchain;
 import pipeline;
+import command;
 
 namespace eng {
     Engine::Engine(const vkfw::Window& window)
@@ -51,7 +52,7 @@ namespace eng {
         m_present_queue = m_device->getQueue(m_gpu.getPresentFamilyIndex(), 0);
 
         // Create the graphics pipeline object
-        const vk::PipelineRenderingCreateInfoKHR dynamic_rendering_info{
+        const vk::PipelineRenderingCreateInfo dynamic_rendering_info{
             {},
             color_format
         };
@@ -63,5 +64,29 @@ namespace eng {
                                          dynamic_rendering_info),
             m_device
         };
+
+        // Create the command pool
+        m_command_pool = vk::SharedCommandPool{ m_device->createCommandPool({
+                vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+                m_gpu.getGraphicsFamilyIndex()
+            }), m_device };
+
+        // Allocate the command buffer
+        m_command_buffer = vk::SharedCommandBuffer{ cmd::allocateCommandBuffer(m_device, m_command_pool), m_device, m_command_pool };
+
+        // Record the draw call
+        vk::RenderingAttachmentInfo color_attachment{
+            m_image_views[0],
+            vk::ImageLayout::eColorAttachmentOptimal,
+        };
+        color_attachment.setClearValue({{0.0f, 0.0f, 0.0f, 1.0f}});
+        const vk::RenderingInfo rendering_info{
+            vk::RenderingFlags{ },
+            vk::Rect2D{ { 0, 0 }, extent },
+            1,
+            {},
+            color_attachment
+        };
+        cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, rendering_info);
     }
 }

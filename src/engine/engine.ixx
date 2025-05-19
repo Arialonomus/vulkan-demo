@@ -31,6 +31,9 @@ namespace eng {
         std::vector<vk::SharedImage>        m_images;
         std::vector<vk::SharedImageView>    m_image_views;
 
+        vk::SharedCommandPool   m_command_pool;
+        vk::SharedCommandBuffer m_command_buffer;
+
         vk::Queue m_graphics_queue;
         vk::Queue m_present_queue;
 
