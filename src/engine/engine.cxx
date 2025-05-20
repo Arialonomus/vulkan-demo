@@ -60,7 +60,6 @@ namespace eng {
         m_graphics_pipeline = vk::SharedPipeline{
             pipe::createGraphicsPipeline(m_device,
                                          m_pipeline_layout,
-                                         extent,
                                          dynamic_rendering_info),
             m_device
         };

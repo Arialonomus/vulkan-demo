@@ -15,7 +15,6 @@ namespace eng::pipe {
 
     vk::Pipeline createGraphicsPipeline(const vk::Device& device,
                                         const vk::PipelineLayout& layout,
-                                        const vk::Extent2D& swapchain_extent,
                                         const vk::PipelineRenderingCreateInfo& dynamic_rendering_info,
                                         vk::PipelineCreateFlags flags)
     {
