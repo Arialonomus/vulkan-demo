@@ -88,10 +88,20 @@ namespace eng {
             color_attachment
         };
         cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, rendering_info);
+
+        // Create synchronization primitives
+        m_image_available = vk::SharedSemaphore{ m_device->createSemaphore({}), m_device };
+        m_render_finished = vk::SharedSemaphore{ m_device->createSemaphore({}), m_device };
+        m_in_flight = vk::SharedFence{ m_device->createFence({vk::FenceCreateFlagBits::eSignaled}), m_device };
     }
 
     void Engine::drawFrame()
     {
-
+        // Wait for the previous frame to finish
+        if (const auto result{ m_device->waitForFences(m_in_flight.get(), true, std::numeric_limits<uint64_t>::max()) };
+            result != vk::Result::eSuccess) {
+                throw std::runtime_error(std::format("failure at \"inFlight\" fence condition: {}", result));
+            }
+        m_device->resetFences(m_in_flight.get());
     }
 }

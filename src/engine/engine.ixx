@@ -43,5 +43,9 @@ namespace eng {
 
         vk::SharedPipelineLayout m_pipeline_layout;
         vk::SharedPipeline       m_graphics_pipeline;
+
+        vk::SharedSemaphore m_image_available;
+        vk::SharedSemaphore m_render_finished;
+        vk::SharedFence     m_in_flight;
     };
 }
