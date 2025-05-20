@@ -24,7 +24,7 @@ namespace eng {
         m_device = vk::SharedDevice{ m_gpu.createLogicalDevice(required_device_extensions) };
 
         // Create the swapchain
-        const auto [color_format, extent, swapchain, images, image_views]{
+        const auto [ color_format, extent, swapchain, images, image_views ]{
             swap::createSwapchain(m_gpu,
                                   m_device,
                                   surface,
@@ -85,7 +85,7 @@ namespace eng {
         // Wait for the previous frame to finish
         if (const auto result{ m_device->waitForFences(m_in_flight.get(), true, std::numeric_limits<uint64_t>::max()) };
             result != vk::Result::eSuccess) {
-                throw std::runtime_error(std::format("failure at \"inFlight\" fence condition: {}", result));
+                throw std::runtime_error("failure at \"inFlight\" fence condition");
             }
         m_device->resetFences(m_in_flight.get());
 
@@ -97,18 +97,28 @@ namespace eng {
             throw std::runtime_error("failed to acquire swapchain image");
         const auto image_index{ acquire_image_result.value };
 
-        // Record and submit command
-        cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, m_image_views[image_index], window_extent);
+        // Record and submit draw command
+        cmd::recordDrawCommand(m_command_buffer,
+                               m_graphics_pipeline,
+                               m_image_views[image_index],
+                               m_images[image_index],
+                               window_extent);
+
         const std::array wait_semaphores{ m_image_available.get() };
         constexpr std::array wait_stages{ vk::PipelineStageFlags{ vk::PipelineStageFlagBits::eColorAttachmentOutput } };
         const std::array command_buffers{ m_command_buffer.get() };
         const std::array signal_semaphores{ m_render_finished.get() };
-
         m_graphics_queue.submit(vk::SubmitInfo{
             wait_semaphores,
             wait_stages,
             command_buffers,
             signal_semaphores
         }, m_in_flight);
+
+        // Present the image to the screen
+        const std::array swapchains{ m_swapchain.get() };
+        if (m_present_queue.presentKHR({ signal_semaphores, swapchains, image_index })
+            != vk::Result::eSuccess)
+            throw std::runtime_error("failed to present swapchain image");
     }
 }
