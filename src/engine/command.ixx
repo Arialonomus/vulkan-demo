@@ -18,5 +18,6 @@ namespace eng::cmd {
     export void
     recordDrawCommand(const vk::CommandBuffer& command_buffer,
                       const vk::Pipeline& graphics_pipeline,
-                      const vk::RenderingInfo& rendering_info);
+                      const vk::ImageView& frame_target,
+                      const vk::Extent2D& image_extent);
 }

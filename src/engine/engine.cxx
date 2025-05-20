@@ -74,21 +74,6 @@ namespace eng {
         // Allocate the command buffer
         m_command_buffer = vk::SharedCommandBuffer{ cmd::allocateCommandBuffer(m_device, m_command_pool), m_device, m_command_pool };
 
-        // Record the draw call
-        vk::RenderingAttachmentInfo color_attachment{
-            m_image_views[0],
-            vk::ImageLayout::eColorAttachmentOptimal,
-        };
-        color_attachment.setClearValue({{0.0f, 0.0f, 0.0f, 1.0f}});
-        const vk::RenderingInfo rendering_info{
-            vk::RenderingFlags{ },
-            vk::Rect2D{ { 0, 0 }, extent },
-            1,
-            {},
-            color_attachment
-        };
-        cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, rendering_info);
-
         // Create synchronization primitives
         m_image_available = vk::SharedSemaphore{ m_device->createSemaphore({}), m_device };
         m_render_finished = vk::SharedSemaphore{ m_device->createSemaphore({}), m_device };
