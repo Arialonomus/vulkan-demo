@@ -5,12 +5,13 @@ module;
 
 module pipeline;
 
+// Internal Dependencies
 import file_utils;
 
 namespace eng::pipe {
     vk::PipelineLayout createPipelineLayout(const vk::Device& device)
     {
-        return device.createPipelineLayout(vk::PipelineLayoutCreateInfo{ });
+        return device.createPipelineLayout(vk::PipelineLayoutCreateInfo());
     }
 
     vk::Pipeline createGraphicsPipeline(const vk::Device& device,
@@ -20,20 +21,16 @@ namespace eng::pipe {
     {
         // Configure active shader stages
         const vk::ShaderModule vertex_shader_module{ createShaderModule(device, "shaders/vert.spv") };
-        const vk::PipelineShaderStageCreateInfo vertex_shader(
-            vk::PipelineShaderStageCreateFlags{ },
-            vk::ShaderStageFlagBits::eVertex,
-            vertex_shader_module,
-            "main"
-        );
+        const auto vertex_shader = vk::PipelineShaderStageCreateInfo()
+            .setStage( vk::ShaderStageFlagBits::eVertex )
+            .setModule( vertex_shader_module )
+            .setPName( "main" );
 
         const vk::ShaderModule fragment_shader_module{ createShaderModule(device, "shaders/frag.spv") };
-        const vk::PipelineShaderStageCreateInfo fragment_shader(
-            vk::PipelineShaderStageCreateFlags{ },
-            vk::ShaderStageFlagBits::eFragment,
-            fragment_shader_module,
-            "main"
-        );
+        const auto fragment_shader = vk::PipelineShaderStageCreateInfo()
+            .setStage( vk::ShaderStageFlagBits::eFragment )
+            .setModule( fragment_shader_module )
+            .setPName( "main" );
 
         const std::array shader_stages{ vertex_shader, fragment_shader };
 
@@ -48,32 +45,31 @@ namespace eng::pipe {
         const auto color_blend_state{ configureColorBlendState() };
 
         // Designate dynamic pipeline state
-        constexpr std::array dynamic_state_values{vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+        constexpr std::array dynamic_state_values{ vk::DynamicState::eViewport, vk::DynamicState::eScissor };
         const auto dynamic_state{ setAsDynamicState(dynamic_state_values) };
 
         // Create the pipeline
-        vk::GraphicsPipelineCreateInfo create_info{
-            flags,
-            shader_stages,
-            &vertex_input_state,
-            &input_assembly_state,
-            &tessellation_state,
-            &viewport_state,
-            &rasterization_state,
-            &multisample_state,
-            &depth_stencil_state,
-            &color_blend_state,
-            &dynamic_state,
-            layout
-        };
-        create_info.setPNext(&dynamic_rendering_info);  // Dynamic rendering info must be attached in the pNext chain
-        if (const auto pipeline{ device.createGraphicsPipeline({}, create_info) }; pipeline.result == vk::Result::eSuccess) {
-            device.destroyShaderModule(vertex_shader_module);
-            device.destroyShaderModule(fragment_shader_module);
-            return pipeline.value;
-        } else {
+        const auto create_info = vk::GraphicsPipelineCreateInfo()
+            .setFlags( flags )
+            .setStages( shader_stages )
+            .setPVertexInputState( &vertex_input_state )
+            .setPInputAssemblyState( &input_assembly_state )
+            .setPTessellationState( &tessellation_state )
+            .setPViewportState( &viewport_state )
+            .setPRasterizationState( &rasterization_state )
+            .setPMultisampleState( &multisample_state )
+            .setPDepthStencilState( &depth_stencil_state )
+            .setPColorBlendState( &color_blend_state )
+            .setPDynamicState( &dynamic_state )
+            .setLayout( layout )
+            .setPNext( &dynamic_rendering_info );  // Dynamic rendering info must be attached in the pNext chain
+        const auto pipeline = device.createGraphicsPipeline({}, create_info);
+        if (pipeline.result != vk::Result::eSuccess)
             throw std::runtime_error("failed to create graphics pipeline");
-        }
+
+        device.destroyShaderModule(vertex_shader_module);
+        device.destroyShaderModule(fragment_shader_module);
+        return pipeline.value;
     }
 
     vk::ShaderModule createShaderModule(const vk::Device& device,
@@ -81,93 +77,76 @@ namespace eng::pipe {
                                         const vk::ShaderModuleCreateFlags flags)
     {
         const util::BytecodeBuffer shader_code{ util::readSPVFile(file_path) };
-        return device.createShaderModule(vk::ShaderModuleCreateInfo(
-            flags,
-            shader_code
-        ));
+        return device.createShaderModule({ flags, shader_code });
     }
 
     vk::PipelineVertexInputStateCreateInfo configureVertexInputState()
     {
-        return { };
+        return vk::PipelineVertexInputStateCreateInfo();
     }
 
     vk::PipelineInputAssemblyStateCreateInfo configureInputAssemblyState()
     {
-        return {
-            vk::PipelineInputAssemblyStateCreateFlags{ },
-            vk::PrimitiveTopology::eTriangleList,
-            false
-        };
+        return vk::PipelineInputAssemblyStateCreateInfo()
+            .setTopology( vk::PrimitiveTopology::eTriangleList )
+            .setPrimitiveRestartEnable( false );
     }
 
     vk::PipelineTessellationStateCreateInfo configureTessellationState()
     {
-        return { };
+        return vk::PipelineTessellationStateCreateInfo();
     }
 
     vk::PipelineViewportStateCreateInfo configureViewportState()
     {
         // We set the viewport state dynamically, so we just provide the viewport and scissor count
-        return {
-            vk::PipelineViewportStateCreateFlags{ },
-            1,
-            nullptr,
-            1,
-            nullptr
-        };
+        return vk::PipelineViewportStateCreateInfo()
+            .setViewportCount( 1 )
+            .setScissorCount( 1 );
     }
 
     vk::PipelineRasterizationStateCreateInfo configureRasterizationState()
     {
-        return {
-            vk::PipelineRasterizationStateCreateFlags{ },
-            false,
-            false,
-            vk::PolygonMode::eFill,
-            vk::CullModeFlagBits::eBack,
-            vk::FrontFace::eCounterClockwise,
-            false
-        };
+        return vk::PipelineRasterizationStateCreateInfo()
+            .setDepthClampEnable( false )
+            .setRasterizerDiscardEnable( false )
+            .setPolygonMode( vk::PolygonMode::eFill )
+            .setCullMode( vk::CullModeFlagBits::eBack )
+            .setFrontFace( vk::FrontFace::eCounterClockwise )
+            .setDepthBiasEnable( false );
     }
 
     vk::PipelineMultisampleStateCreateInfo configureMultisampleState()
     {
-        return { };
+        return vk::PipelineMultisampleStateCreateInfo();
     }
 
     vk::PipelineDepthStencilStateCreateInfo configureDepthStencilState()
     {
-        return { };
+        return vk::PipelineDepthStencilStateCreateInfo();
     }
 
     vk::PipelineColorBlendStateCreateInfo configureColorBlendState()
     {
         // Since we are using dynamic rendering, there will only be one color attachment state
-        constexpr vk::PipelineColorBlendAttachmentState alpha_blending{
-            true,
-            vk::BlendFactor::eSrcAlpha,
-            vk::BlendFactor::eOneMinusSrcAlpha,
-            vk::BlendOp::eAdd,
-            vk::BlendFactor::eOne,
-            vk::BlendFactor::eZero,
-            vk::BlendOp::eAdd,
-            vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA
-        };
+        constexpr auto alpha_blending = vk::PipelineColorBlendAttachmentState()
+            .setBlendEnable( true )
+            .setSrcColorBlendFactor( vk::BlendFactor::eSrcAlpha )
+            .setDstColorBlendFactor( vk::BlendFactor::eOneMinusSrcAlpha )
+            .setColorBlendOp( vk::BlendOp::eAdd )
+            .setSrcAlphaBlendFactor( vk::BlendFactor::eOne )
+            .setDstAlphaBlendFactor( vk::BlendFactor::eZero )
+            .setAlphaBlendOp( vk::BlendOp::eAdd )
+            .setColorWriteMask( vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA );
 
-        return {
-            vk::PipelineColorBlendStateCreateFlags{ },
-            false,
-            {},     // Empty, since we are not using a bitwise operation
-            alpha_blending
-        };
+        return vk::PipelineColorBlendStateCreateInfo()
+            .setLogicOpEnable( false )
+            .setAttachments( alpha_blending );
     }
 
     vk::PipelineDynamicStateCreateInfo setAsDynamicState(std::span<const vk::DynamicState> state_values)
     {
-        return {
-            vk::PipelineDynamicStateCreateFlags{ },
-            state_values
-        };
+        return vk::PipelineDynamicStateCreateInfo()
+            .setDynamicStates( state_values );
     }
 }

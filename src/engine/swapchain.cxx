@@ -17,8 +17,8 @@ namespace eng::swap {
         const auto surface_capabilities{ gpu.getDevice().getSurfaceCapabilitiesKHR(surface) };
         const auto [ color_format, color_space ] = selectSurfaceFormat(gpu.getDevice().getSurfaceFormatsKHR(surface));
         const auto image_extent{ getImageExtent(surface_capabilities, window_extent) };
-        vk::SwapchainCreateInfoKHR create_info{ };
-        create_info.setSurface( surface )
+        auto create_info = vk::SwapchainCreateInfoKHR()
+            .setSurface( surface )
             .setMinImageCount( chooseImageCount(surface_capabilities) )
             .setImageFormat( color_format )
             .setImageColorSpace( color_space )
@@ -117,16 +117,17 @@ namespace eng::swap {
         image_views.reserve(images.size());
 
         // Create views for each image
-        vk::ImageViewCreateInfo create_info(
-            {},
-            {},
-            vk::ImageViewType::e2D,
-            color_format,
-            {},
-            { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 }
-        );
+        auto create_info = vk::ImageViewCreateInfo()
+            .setViewType( vk::ImageViewType::e2D )
+            .setFormat( color_format )
+            .setSubresourceRange( vk::ImageSubresourceRange()
+                .setAspectMask( vk::ImageAspectFlagBits::eColor )
+                .setBaseMipLevel( 0 )
+                .setLevelCount( 1 )
+                .setBaseArrayLayer( 0 )
+                .setLayerCount( 1 ) );
         for (const auto& image : images) {
-            create_info.image = image;
+            create_info.setImage( image );
             image_views.push_back(device.createImageView(create_info));
         }
         return image_views;

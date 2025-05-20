@@ -52,10 +52,8 @@ namespace eng {
         m_present_queue = m_device->getQueue(m_gpu.getPresentFamilyIndex(), 0);
 
         // Create the graphics pipeline object
-        const vk::PipelineRenderingCreateInfo dynamic_rendering_info{
-            {},
-            color_format
-        };
+        const auto dynamic_rendering_info = vk::PipelineRenderingCreateInfo()
+            .setColorAttachmentFormats(color_format);
         m_pipeline_layout = vk::SharedPipelineLayout{ pipe::createPipelineLayout(m_device), m_device };
         m_graphics_pipeline = vk::SharedPipeline{
             pipe::createGraphicsPipeline(m_device,
@@ -83,9 +81,8 @@ namespace eng {
     {
         // Wait for the previous frame to finish
         if (const auto result{ m_device->waitForFences(m_in_flight.get(), true, std::numeric_limits<uint64_t>::max()) };
-            result != vk::Result::eSuccess) {
+            result != vk::Result::eSuccess)
                 throw std::runtime_error("failure at \"inFlight\" fence condition");
-            }
         m_device->resetFences(m_in_flight.get());
 
         // Attempt to acquire the next swapchain image
@@ -107,12 +104,12 @@ namespace eng {
         constexpr std::array wait_stages{ vk::PipelineStageFlags{ vk::PipelineStageFlagBits::eColorAttachmentOutput } };
         const std::array command_buffers{ m_command_buffer.get() };
         const std::array signal_semaphores{ m_render_finished.get() };
-        m_graphics_queue.submit(vk::SubmitInfo{
-            wait_semaphores,
-            wait_stages,
-            command_buffers,
-            signal_semaphores
-        }, m_in_flight);
+        const auto submit_info = vk::SubmitInfo()
+            .setWaitSemaphores( wait_semaphores )
+            .setWaitDstStageMask( wait_stages )
+            .setCommandBuffers( command_buffers )
+            .setSignalSemaphores( signal_semaphores );
+        m_graphics_queue.submit(submit_info, m_in_flight);
 
         // Present the image to the screen
         const std::array swapchains{ m_swapchain.get() };

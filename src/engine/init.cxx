@@ -14,25 +14,18 @@ import vulkan_utils;
 namespace eng::init {
     vk::Instance createVulkanInstance()
     {
-        constexpr vk::ApplicationInfo app_info(
-            "Hello Triangle",
-            vk::makeApiVersion(0, 0, 1, 0),
-            "No Engine",
-            vk::makeApiVersion(0, 0, 0, 0),
-            vk::ApiVersion14
-        );
+        constexpr auto app_info = vk::ApplicationInfo()
+            .setPApplicationName( "Hello Triangle" )
+            .setApplicationVersion( vk::makeApiVersion(0, 0, 1, 0) )
+            .setApiVersion( vk::ApiVersion14 );
 
-        constexpr std::vector<const char*> enabled_layers{ };
-        const std::vector<const char*> enabled_extensions = enumerateEnabledInstanceExtensions();
-        constexpr vk::InstanceCreateFlags flags{ };
+        const auto enabled_extensions = enumerateEnabledInstanceExtensions();
 
-        const vk::InstanceCreateInfo instance_info(
-            flags,
-            &app_info,
-            enabled_layers,
-            enabled_extensions
-        );
-        return vk::createInstance(instance_info);
+        const auto instance_info = vk::InstanceCreateInfo()
+            .setPApplicationInfo( &app_info )
+            .setPEnabledExtensionNames( enabled_extensions );
+
+        return vk::createInstance( instance_info );
     }
 
     GPU selectSuitableGPU(const std::span<const vk::PhysicalDevice> candidate_devices,

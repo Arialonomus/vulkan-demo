@@ -23,15 +23,12 @@ namespace eng {
         }
 
         // Instantiate logical device
-        constexpr vk::PhysicalDeviceDynamicRenderingFeatures dynamic_rendering_enabled{true};
-        vk::DeviceCreateInfo device_info(
-            vk::DeviceCreateFlags{ },
-            queues,
-            {},     // Deprecated pEnabledLayerNames parameter
-            required_extensions,
-            &this->getFeatures()
-        );
-        device_info.setPNext(&dynamic_rendering_enabled);
+        constexpr vk::PhysicalDeviceDynamicRenderingFeatures dynamic_rendering_enabled{ true };
+        const auto device_info = vk::DeviceCreateInfo()
+            .setQueueCreateInfos( queues )
+            .setPEnabledExtensionNames( required_extensions )
+            .setPEnabledFeatures( &this->getFeatures() )
+            .setPNext( &dynamic_rendering_enabled );
         return m_device.createDevice(device_info);
     }
 
@@ -82,10 +79,9 @@ namespace eng {
                                                   const std::span<const float> priorities,
                                                   const vk::DeviceQueueCreateFlags flags) const
     {
-        return {
-            flags,
-            family_index,
-            priorities  // Number of queues to create is derived from number of priorities in array
-        };
+        return vk::DeviceQueueCreateInfo()
+            .setFlags(flags)
+            .setQueueFamilyIndex(family_index)
+            .setQueuePriorities(priorities);
     }
 }
