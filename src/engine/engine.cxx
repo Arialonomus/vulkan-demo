@@ -80,7 +80,7 @@ namespace eng {
         m_in_flight = vk::SharedFence{ m_device->createFence({vk::FenceCreateFlagBits::eSignaled}), m_device };
     }
 
-    void Engine::drawFrame()
+    void Engine::drawFrame(const vk::Extent2D& window_extent)
     {
         // Wait for the previous frame to finish
         if (const auto result{ m_device->waitForFences(m_in_flight.get(), true, std::numeric_limits<uint64_t>::max()) };

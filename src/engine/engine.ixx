@@ -22,7 +22,7 @@ namespace eng {
 
         /* Rendering Calls */
 
-        void drawFrame();
+        void drawFrame(const vk::Extent2D& window_extent);
 
     private:
         /* Data Members */
