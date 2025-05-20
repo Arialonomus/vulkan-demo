@@ -29,7 +29,7 @@ namespace eng::pipe {
 
     [[nodiscard]] vk::PipelineTessellationStateCreateInfo configureTessellationState();
 
-    [[nodiscard]] vk::PipelineViewportStateCreateInfo configureViewportState(const vk::Extent2D& swapchain_extent = {});
+    [[nodiscard]] vk::PipelineViewportStateCreateInfo configureViewportState();
 
     [[nodiscard]] vk::PipelineRasterizationStateCreateInfo configureRasterizationState();
 

@@ -107,18 +107,15 @@ namespace eng::pipe {
         return { };
     }
 
-    vk::PipelineViewportStateCreateInfo configureViewportState(const vk::Extent2D& swapchain_extent)
+    vk::PipelineViewportStateCreateInfo configureViewportState()
     {
-        const vk::Viewport viewport{
-            0, 0,
-            static_cast<float>(swapchain_extent.width), static_cast<float>(swapchain_extent.height),
-            0, 1 };
-        const vk::Rect2D scissor{ vk::Offset2D{ 0, 0 }, swapchain_extent };
-
+        // We set the viewport state dynamically, so we just provide the viewport and scissor count
         return {
             vk::PipelineViewportStateCreateFlags{ },
-            viewport,
-            scissor
+            1,
+            nullptr,
+            1,
+            nullptr
         };
     }
 
