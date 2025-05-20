@@ -88,5 +88,27 @@ namespace eng {
                 throw std::runtime_error(std::format("failure at \"inFlight\" fence condition: {}", result));
             }
         m_device->resetFences(m_in_flight.get());
+
+        // Attempt to acquire the next swapchain image
+        const auto acquire_image_result{ m_device->acquireNextImageKHR(m_swapchain.get(),
+                                                                       std::numeric_limits<uint64_t>::max(),
+                                                                       m_image_available.get()) };
+        if (acquire_image_result.result != vk::Result::eSuccess)
+            throw std::runtime_error("failed to acquire swapchain image");
+        const auto image_index{ acquire_image_result.value };
+
+        // Record and submit command
+        cmd::recordDrawCommand(m_command_buffer, m_graphics_pipeline, m_image_views[image_index], window_extent);
+        const std::array wait_semaphores{ m_image_available.get() };
+        constexpr std::array wait_stages{ vk::PipelineStageFlags{ vk::PipelineStageFlagBits::eColorAttachmentOutput } };
+        const std::array command_buffers{ m_command_buffer.get() };
+        const std::array signal_semaphores{ m_render_finished.get() };
+
+        m_graphics_queue.submit(vk::SubmitInfo{
+            wait_semaphores,
+            wait_stages,
+            command_buffers,
+            signal_semaphores
+        }, m_in_flight);
     }
 }
