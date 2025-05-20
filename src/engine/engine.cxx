@@ -69,7 +69,12 @@ namespace eng {
             }), m_device };
 
         // Allocate the command buffer
-        m_command_buffer = vk::SharedCommandBuffer{ cmd::allocateCommandBuffer(m_device, m_command_pool), m_device, m_command_pool };
+        const vk::CommandBuffer command_buffer{ m_device->allocateCommandBuffers(vk::CommandBufferAllocateInfo()
+            .setCommandPool( m_command_pool )
+            .setLevel( vk::CommandBufferLevel::ePrimary )
+            .setCommandBufferCount( 1 )
+        )[0] };
+        m_command_buffer = vk::SharedCommandBuffer{ command_buffer, m_device, m_command_pool };
 
         // Create synchronization primitives
         m_image_available = vk::SharedSemaphore{ m_device->createSemaphore({}), m_device };
