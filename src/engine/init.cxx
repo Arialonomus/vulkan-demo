@@ -42,7 +42,7 @@ namespace eng::init {
         if (candidate_devices.empty())
             throw std::runtime_error("unable to locate a Vulkan-compatible GPU");
 
-        // Locate the best GPU
+        // Filter any non-viable GPUs
         std::vector<GPU> viable_gpus{ };
         for (const auto& device : candidate_devices) {
             GPU gpu{ device, surface };
@@ -55,9 +55,10 @@ namespace eng::init {
             if (meets_minimum_requirements)
                 viable_gpus.push_back(gpu);
         }
-
         if (viable_gpus.empty())
             throw std::runtime_error("unable to locate a suitable GPU");
+
+        // Select the best GPU from the remaining candidates
         if (viable_gpus.size() == 1)
             return viable_gpus.front();
 
@@ -66,12 +67,13 @@ namespace eng::init {
 
     std::vector<const char*> enumerateEnabledInstanceExtensions()
     {
-        // Query required instance extensions
+        // Query required instance extensions from external libraries
         const auto glfw_extensions = vkfw::getRequiredInstanceExtensions();
 
         // Accumulate required extension names into a single list
+        constexpr std::array specified_extensions{ vk::EXTDebugUtilsExtensionName };
         const auto enabled_extensions{
-            util::flattenToVector<const char*>(glfw_extensions)
+            util::flattenToVector<const char*>(specified_extensions, glfw_extensions)
         };
 
         // Ensure all required extensions are supported
